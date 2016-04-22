@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<h1>{{current_user.email}} Dashboard</h1>
+<br>
+
+<table>
+    <h4><b>Personal Info</b></h4>
+    {% for key, value in data.items() %}
+   <tr>
+        <th> {{ key }}: </th>
+        <td> {{ value }} </td>
+   </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

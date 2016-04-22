@@ -1,0 +1,24 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<head>
+    <title>Personal Info</title>
+</head>
+<body>
+    <h1>Mongo1</h1>
+    <form action="/write" method="POST">
+        First name:<input type="text" name="firstname"><br>
+        Last name:<input type="text" name="lastname"><br>
+        <input type="submit" value="Save">
+    </form>
+
+    <a href="./deleteall">Delete all</a>
+
+    {% for userinput in userinputs %}
+    <p>'{{userinput.message}}' has database id {{userinput._id}}</p>
+    {% endfor %}
+
+</body>
+
+{% endblock %}
