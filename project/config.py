@@ -20,7 +20,7 @@ class BaseConfig(object):
     # MAIL_USE_TLS = False
     # MAIL_USE_SSL = True
 
-    MAIL_SERVER = os.environ['smtp.mailgun.org']
+    MAIL_SERVER = os.environ['MAILGUN_SMTP_SERVER']
     MAIL_PORT = 587
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
