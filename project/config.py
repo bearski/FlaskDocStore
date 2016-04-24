@@ -32,7 +32,8 @@ class BaseConfig(object):
 
     MAIL_USERNAME = os.environ['MAILGUN_SMTP_LOGIN']
     MAIL_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
-
+    MAILGUN_KEY = os.environ['MAILGUN_KEY']
+    MAILGUN_KEY = os.environ['MAILGUN_DOMAIN']
 
     # mail accounts
     # MAIL_DEFAULT_SENDER = os.environ['APP_MAIL_DEFAULT_SENDER']
