@@ -8,3 +8,7 @@ tmp
 __pycache__
 env.sh
 .env
+.idea/
+*.ipr
+*.iml
+*.iws
