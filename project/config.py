@@ -15,31 +15,14 @@ class BaseConfig(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     # mail settings
-    # MAIL_SERVER = 'smtp.gmail.com'
-    # MAIL_PORT = 465
-
-
-    MAIL_SERVER = 'smtp.mailgun.org' # os.environ['MAILGUN_SMTP_SERVER']
-    MAIL_PORT = 587 # os.environ['MAILGUN_SMTP_PORT']
+    MAIL_SERVER = os.environ['MAILGUN_SMTP_SERVER']
+    MAIL_PORT = os.environ['MAILGUN_SMTP_PORT']
     MAIL_USE_TLS = True
+    MAIL_USERNAME = os.environ['MAILGUN_SMTP_LOGIN']
+    MAIL_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
+    MAIL_DEFAULT_SENDER = os.environ['MAILGUN_SMTP_LOGIN']
 
-
-    # gmail authentication
-    # MAIL_USERNAME = os.environ['APP_MAIL_USERNAME']
-    # MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
-
-    MAIL_USERNAME = 'postmaster@appbffbce930f264e479c9e27fd294518d6.mailgun.org' # os.environ['MAILGUN_SMTP_LOGIN']
-    MAIL_PASSWORD = '1706b4fab5522717b7f68014bb7b39d9' # os.environ['MAILGUN_SMTP_PASSWORD']
-
-    # MAILGUN_API_KEY = os.environ['MAILGUN_API_KEY']
-    # MAILGUN_DOMAIN = os.environ['MAILGUN_DOMAIN']
-    # MAILGUN_PUBLIC_KEY = os.environ['MAILGUN_PUBLIC_KEY']
-
-    # mail accounts
-    # MAIL_DEFAULT_SENDER = os.environ['APP_MAIL_DEFAULT_SENDER']
-    MAIL_DEFAULT_SENDER = 'postmaster@appbffbce930f264e479c9e27fd294518d6.mailgun.org' # os.environ['MAILGUN_SMTP_LOGIN']
-
-    #SQLALCHEMY_DATABASE_URI = os.environ['APP_SQLALCHEMY_DATABASE_URI']
+    # db connection
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 class TestingConfig(BaseConfig):
