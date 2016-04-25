@@ -17,17 +17,6 @@ from project.token import generate_confirmation_token, confirm_token
 from project.decorators import check_confirmed
 
 
-## mongodb ##
-#from pymongo import MongoClient
-
-# def connect():
-#     connection = MongoClient('ds013260.mlab.com',13260) # db connection
-#     handle = connection['doc_mongo_db']                 # db name
-#     handle.authenticate('mongo','mongo')                # user pword
-#     return handle
-
-## mongodb ##
-
 ################
 #### config ####
 ################
@@ -159,32 +148,3 @@ def resend_confirmation():
 def dashboard():
     data = {"lastname" : "sewlal", "email" : "santosh.sewlal@gmail.com", "firstname" : "santosh" }
     return render_template('user/dashboard.html', data=data)
-#    return render_template('user/dashboard.html')
-
-
-# @user_blueprint.route('/mongo1', methods=['GET', 'POST'])
-# @login_required
-# def mongo1():
-#     handle = connect()
-#     firstname = request.form.get('firstname')
-#     lastname = request.form.get('lastname')
-#     data = {'firstname':firstname, 'lastname':lastname}
-#     handle.mycollection.update({'email':current_user.email}, data, upsert=True)
-#
-#     return redirect(url_for('user.profile'))
-
-#    return render_template('user/mongo1.html', userinputs=userinputs)
-#    return render_template('user/mongo1.html')
-#    return redirect(url_for('user/mongo1'))
-
-#@user_blueprint.route("/write", methods=['POST'])
-#def write():
-#    handle = connect()
-#    oid = handle.mycollection.insert({'email':current_user.email, 'firstname':firstname, 'lastname':lastname})
-#    return redirect(url_for('user.profile'))
-
-# @user_blueprint.route("/deleteall", methods=['GET'])
-# def deleteall():
-#     handle = connect()
-#     handle.mycollection.remove()
-#     return redirect(url_for('user.dashboard'))
