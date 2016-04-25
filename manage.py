@@ -11,9 +11,7 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from project import app, db
 from project.models import User
 
-
 app.config.from_object(os.environ['APP_SETTINGS'])
-#app.config.from_object('project.config.ProductionConfig')
 
 migrate = Migrate(app, db)
 manager = Manager(app)
