@@ -9,4 +9,6 @@ def send_email(to, subject, template):
         html=template,
         sender=app.config['MAIL_DEFAULT_SENDER']
     )
-    mail.send(msg)
+
+    with app.app_context():
+        mail.send(msg)

@@ -37,7 +37,7 @@ class BaseConfig(object):
 
     # mail accounts
     # MAIL_DEFAULT_SENDER = os.environ['APP_MAIL_DEFAULT_SENDER']
-    MAIL_DEFAULT_SENDER =  'postmaster@appbffbce930f264e479c9e27fd294518d6.mailgun.org' # os.environ['MAILGUN_SMTP_LOGIN']
+    MAIL_DEFAULT_SENDER = 'postmaster@appbffbce930f264e479c9e27fd294518d6.mailgun.org' # os.environ['MAILGUN_SMTP_LOGIN']
 
     #SQLALCHEMY_DATABASE_URI = os.environ['APP_SQLALCHEMY_DATABASE_URI']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
