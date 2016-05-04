@@ -12,7 +12,7 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from project.models import User
 from project.email import send_email
 from project import db, bcrypt
-from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from .forms import LoginForm, RegisterForm, ChangePasswordForm, EditPersonalForm
 from project.token import generate_confirmation_token, confirm_token
 from project.decorators import check_confirmed
 
@@ -35,6 +35,7 @@ def register():
     if form.validate_on_submit():
         user = User(
             email=form.email.data,
+#            username=form.username.data,
             password=form.password.data,
             confirmed=False
         )
@@ -67,6 +68,7 @@ def login():
             login_user(user)
             flash('Welcome.', 'success')
             return redirect(url_for('main.home'))
+            #return redirect(url_for('user.profile', username=user.username))
         else:
             flash('Invalid email and/or password.', 'danger')
             return render_template('user/login.html', form=form)
@@ -82,23 +84,29 @@ def logout():
     return redirect(url_for('user.login'))
 
 
-@user_blueprint.route('/profile', methods=['GET', 'POST'])
+@user_blueprint.route('/changepassword', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
-def profile():
-    form = ChangePasswordForm(request.form)
+def changepassword():
+    user = User.query.filter_by(email=current_user.email).first()
+    if not user:
+        flash('Password successfully changed.', 'success')
+        return redirect(url_for('user.logout'))
+
+    form = ChangePasswordForm(request.form, prefix='pwd')
     if form.validate_on_submit():
         user = User.query.filter_by(email=current_user.email).first()
         if user:
             user.password = bcrypt.generate_password_hash(form.password.data)
             db.session.commit()
             flash('Password successfully changed.', 'success')
-            return redirect(url_for('user.profile'))
+            #return redirect(url_for('user.profile', username=user.username))
+            return redirect(url_for('main.home'))
         else:
             flash('Password change was unsuccessful.', 'danger')
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('user.changepassword'))
 
-    return render_template('user/profile.html', form=form)
+    return render_template('user/changepassword.html', form=form)
 
 
 @user_blueprint.route('/confirm/<token>')
@@ -143,8 +151,53 @@ def resend_confirmation():
     return redirect(url_for('user.unconfirmed'))
 
 
-@user_blueprint.route('/dashboard')
+# @user_blueprint.route('/dashboard')
+# @login_required
+# def dashboard():
+#     user = User.query.filter_by(email=current_user.email).first_or_404()
+#
+#     if not user:
+#         flash('User not found', 'danger')
+#         return redirect(url_for('main.home'))
+#
+#     data = {
+#         "username" : user.username,
+#         "firstname" : user.firstname,
+#         "lastname" : user.surname,
+#         "email" : user.email
+#     }
+#
+#     return render_template('user/dashboard.html', data=data)
+
+
+@user_blueprint.route('/user/<username>')
 @login_required
-def dashboard():
-    data = {"lastname" : "sewlal", "email" : "santosh.sewlal@gmail.com", "firstname" : "santosh" }
-    return render_template('user/dashboard.html', data=data)
+def profile(username):
+    user = User.query.filter_by(username=username).first()
+    if user == None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+
+    return render_template('user/profile.html', user=user)
+
+
+@user_blueprint.route('/edit/<username>', methods=['GET', 'POST'])
+def editpersonalinfo(username):
+    form = EditPersonalForm(request.form, prefix='edit')
+
+    user = User.query.filter_by(username=username).first()
+    if user == None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+
+    if request.method == 'POST' and form.validate_on_submit():
+        user.firstname = form.firstname.data
+        user.surname = form.lastname.data
+        user.birthdate = form.birthdate.data
+        user.gender = form.gender.data
+        db.session.commit()
+
+        return redirect(url_for('user.profile', username=username))
+
+    return render_template('user/form.html', form=form)
+

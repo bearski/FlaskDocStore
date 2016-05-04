@@ -1,0 +1,32 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+
+<title>Edit Profile</title>
+  <form action="" method="post" name="edit">
+      {{ form.hidden_tag() }}
+      <p>
+          First Name:<br>
+          {{ form.firstname }}<br>
+      </p>
+      <p>
+          Last Name:<br>
+          {{ form.lastname }}<br>
+      </p>
+      <p>
+          Date of Birth:<br>
+          {{ form.birthdate }}<br>
+      </p>
+      <p>
+          Gender:<br>
+          {{ form.gender }}<br>
+      </p>
+
+      <br>
+      <button class="btn btn-success" type="submit">Save</button>
+
+  </form>
+
+
+{% endblock %}

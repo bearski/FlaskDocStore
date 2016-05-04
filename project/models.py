@@ -1,16 +1,18 @@
 # project/models.py
 
-
 import datetime
-
 from project import db, bcrypt
-
+from hashlib import md5
 
 class User(db.Model):
-    __tablename__ = "user_login"
-
+    __tablename__ = "human"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
+    username = db.Column(db.String(60), unique=True, nullable=True)
+    firstname = db.Column(db.String(60), nullable=True)
+    surname = db.Column(db.String(60), nullable=True)
+    gender = db.Column(db.String, nullable=True)
+    birthdate = db.Column(db.DateTime, nullable=True)
     password = db.Column(db.String, nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     admin = db.Column(db.Boolean, nullable=False, default=False)
@@ -23,6 +25,7 @@ class User(db.Model):
         self.admin = admin
         self.confirmed = confirmed
         self.confirmed_on = confirmed_on
+        self.username = email
 
     def is_authenticated(self):
         return True
@@ -36,34 +39,37 @@ class User(db.Model):
     def get_id(self):
         return self.id
 
+    def avatar(self, size):
+        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
+
     def __repr__(self):
         return '<email {}'.format(self.email)
 
 
-class UserData(db.Model):
-    __tablename__ = "user_info"
-
+class Address(db.Model):
+    __tablename__ = "address"
     id = db.Column(db.Integer, primary_key=True)
-    user_login_id = db.Column(db.Integer, db.ForeignKey('user_login.id'), nullable=False)
-    surname = db.Column(db.String, unique=True, nullable=True)
-    firstname = db.Column(db.String, nullable=True)
-    initials = db.Column(db.String, nullable=True)
-    maiden_name = db.Column(db.String, nullable=True)
-    idtype = db.Column(db.String, nullable=False)
-    idnumber = db.Column(db.String, nullable=False)
-    race = db.Column(db.String, nullable=True)
-    gender = db.Column(db.String, nullable=True)
-    birthdate  = db.Column(db.DateTime, nullable=True)
-    alt_email = db.Column(db.String, nullable=True)
-    telno = db.Column(db.String, nullable=True)
-    notification = db.Column(db.Boolean, nullable=False, default=False)
-    fulltimestudent = db.Column(db.Boolean, nullable=False, default=False)
-    current_org = db.Column(db.String, nullable=True)
-
-    def __init__(self, userid, idtype, idnumber):
-        self.userid = userid
-        self.idtype = idtype
-        self.idnumber = idnumber
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    pobox = db.Column(db.String(10))
+    building = db.Column(db.String(140))
+    streetname = db.Column(db.String(140))
+    suburb = db.Column(db.String(140))
+    city = db.Column(db.String(140))
+    state = db.Column(db.String(140))
+    postalcode = db.Column(db.String(10))
+    country = db.Column(db.String(140))
 
     def __repr__(self):
-        return '<idnumber {}'.format(self.idnumber)
+        return '<id {}'.format(self.id)
+
+class Telephone(db.Model):
+    __tablename__ = "Telephone"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    phonetype_id = db.Column(db.Integer)
+    countrycode = db.Column(db.String(5))
+    areacode = db.Column(db.String(5))
+    telno = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<id {}'.format(self.id)

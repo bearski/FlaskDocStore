@@ -66,6 +66,7 @@ def create_admin():
     db.session.add(User(
         email="ad@min.com",
         password="admin",
+        username="admin",
         admin=True,
         confirmed=True,
         confirmed_on=datetime.datetime.now())

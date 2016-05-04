@@ -2,11 +2,12 @@
 
 
 from flask_wtf import Form
-from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Email, Length, EqualTo
+from wtforms import StringField, PasswordField, SelectField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
+from wtforms.fields.html5 import DateField
 
 from project.models import User
-
+#from project import app
 
 class LoginForm(Form):
     email = StringField('email', validators=[DataRequired(), Email()])
@@ -45,6 +46,7 @@ class ChangePasswordForm(Form):
         'password',
         validators=[DataRequired(), Length(min=6, max=25)]
     )
+
     confirm = PasswordField(
         'Repeat password',
         validators=[
@@ -52,3 +54,19 @@ class ChangePasswordForm(Form):
             EqualTo('password', message='Passwords must match.')
         ]
     )
+
+
+gender = [
+    (''),
+    ('Female'),
+    ('Male')
+]
+
+class EditPersonalForm(Form):
+    firstname = StringField('firstname', validators=[Optional()])
+    lastname = StringField('lastname', validators=[Optional()])
+    birthdate = StringField('birthdate', validators=[Optional()])
+#    birthdate = DateField('DatePicker', format('%Y-%m-%d'))
+    gender = SelectField('Gender', choices=gender)
+
+
