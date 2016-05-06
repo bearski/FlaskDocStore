@@ -11,9 +11,22 @@
 
 <td><h2>{{ user.username }}</h2></td><br>
 <td>Email: {{ user.email }}</td><br>
-<td>First Name: {{ user.firstname }}</td><br>
+
+<td>
+    First Name:  <a href="#" id="firstname" data-type="text" data-url="/user_edit_firstname" data-pk="{{user.email}}"  data-title="update first name">{{ user.firstname }}</a>
+</td><br>
+
 <td>Last Name: {{ user.surname }}</td><br>
 <td>Date of Birth: {{ user.birthdate }}</td><br>
 <td>Gender: {{ user.gender }}</td><br>
+
+<script>
+        $('#firstname').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+</script>
+
 
 {% endblock %}

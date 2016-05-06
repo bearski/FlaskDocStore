@@ -13,3 +13,4 @@ env.sh
 *.iml
 *.iws
 .idea/workspace.xml
+.directory

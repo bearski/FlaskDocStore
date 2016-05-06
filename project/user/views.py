@@ -201,3 +201,9 @@ def editpersonalinfo(username):
 
     return render_template('user/form.html', form=form)
 
+@user_blueprint.route('/user_edit_firstname',methods=['GET', 'POST'])
+def user_edit_firstname():
+    user = User.query.filter_by(email=current_user.email).first()
+    user.firstname = request.form["value"]
+    db.session.commit()
+    return redirect(url_for('user.profile', username=user.username))
