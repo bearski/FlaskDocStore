@@ -2,12 +2,12 @@
 
 
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SelectField
+from wtforms import StringField, PasswordField, SelectField, FieldList, FormField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 from wtforms.fields.html5 import DateField
 
 from project.models import User
-#from project import app
+
 
 class LoginForm(Form):
     email = StringField('email', validators=[DataRequired(), Email()])
@@ -62,11 +62,32 @@ gender = [
     ('Male')
 ]
 
+
 class EditPersonalForm(Form):
     firstname = StringField('firstname', validators=[Optional()])
     lastname = StringField('lastname', validators=[Optional()])
     birthdate = StringField('birthdate', validators=[Optional()])
-#    birthdate = DateField('DatePicker', format('%Y-%m-%d'))
+    birthdate = DateField('DatePicker', format('%Y-%m-%d'))
     gender = SelectField('Gender', choices=gender)
 
 
+class AddEmploymentForm(Form):
+    human_id = StringField('human_id', validators=[Optional()])
+    employer = StringField('employer', validators=[Optional()])
+    position = StringField('position', validators=[Optional()])
+    # start_date = DateField('DatePicker', format('%Y-%m-%d'))
+    # end_date = DateField('DatePicker', format('%Y-%m-%d'))
+    job_desc = StringField('job_desc', validators=[Optional()])
+
+
+class EmploymentListForm(Form):
+    employmentlist = FieldList(FormField(AddEmploymentForm))
+
+
+class AddEducationForm(Form):
+    human_id = StringField('human_id', validators=[Optional()])
+    educational_institution = StringField('educational_institution', validators=[Optional()])
+    course_studied = StringField('course_studied', validators=[Optional()])
+    # start_date = DateField('DatePicker', format('%Y-%m-%d'))
+    # end_date = DateField('DatePicker', format('%Y-%m-%d'))
+    accolades = StringField('job_desc', validators=[Optional()])

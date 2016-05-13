@@ -13,7 +13,6 @@ from flask.ext.bcrypt import Bcrypt
 from flask_mail import Mail
 from flask.ext.debugtoolbar import DebugToolbarExtension
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
 
 ################
 #### config ####

@@ -8,11 +8,19 @@ import datetime
 
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask.ext.login import login_user, logout_user, login_required, current_user
+from werkzeug.datastructures import MultiDict
 
-from project.models import User
+from project.models import User, Employment, Education
 from project.email import send_email
 from project import db, bcrypt
-from .forms import LoginForm, RegisterForm, ChangePasswordForm, EditPersonalForm
+from .forms import (
+    LoginForm,
+    RegisterForm,
+    ChangePasswordForm,
+    AddEmploymentForm,
+    AddEducationForm,
+    EmploymentListForm
+    )
 from project.token import generate_confirmation_token, confirm_token
 from project.decorators import check_confirmed
 
@@ -139,6 +147,7 @@ def unconfirmed():
     flash('Please confirm your account!', 'warning')
     return render_template('user/unconfirmed.html')
 
+
 @user_blueprint.route('/resend')
 @login_required
 def resend_confirmation():
@@ -149,25 +158,6 @@ def resend_confirmation():
     send_email(current_user.email, subject, html)
     flash('A new confirmation email has been sent.', 'success')
     return redirect(url_for('user.unconfirmed'))
-
-
-# @user_blueprint.route('/dashboard')
-# @login_required
-# def dashboard():
-#     user = User.query.filter_by(email=current_user.email).first_or_404()
-#
-#     if not user:
-#         flash('User not found', 'danger')
-#         return redirect(url_for('main.home'))
-#
-#     data = {
-#         "username" : user.username,
-#         "firstname" : user.firstname,
-#         "lastname" : user.surname,
-#         "email" : user.email
-#     }
-#
-#     return render_template('user/dashboard.html', data=data)
 
 
 @user_blueprint.route('/user/<username>')
@@ -181,29 +171,115 @@ def profile(username):
     return render_template('user/profile.html', user=user)
 
 
-@user_blueprint.route('/edit/<username>', methods=['GET', 'POST'])
-def editpersonalinfo(username):
-    form = EditPersonalForm(request.form, prefix='edit')
-
-    user = User.query.filter_by(username=username).first()
-    if user == None:
-        flash('User %s not found.' % username, 'danger')
-        return redirect(url_for('main.home'))
-
-    if request.method == 'POST' and form.validate_on_submit():
-        user.firstname = form.firstname.data
-        user.surname = form.lastname.data
-        user.birthdate = form.birthdate.data
-        user.gender = form.gender.data
-        db.session.commit()
-
-        return redirect(url_for('user.profile', username=username))
-
-    return render_template('user/form.html', form=form)
-
-@user_blueprint.route('/user_edit_firstname',methods=['GET', 'POST'])
+@user_blueprint.route('/user_edit_firstname', methods=['GET', 'POST'])
+@login_required
 def user_edit_firstname():
     user = User.query.filter_by(email=current_user.email).first()
     user.firstname = request.form["value"]
     db.session.commit()
     return redirect(url_for('user.profile', username=user.username))
+
+
+@user_blueprint.route('/user_edit_lasttname', methods=['GET', 'POST'])
+@login_required
+def user_edit_lastname():
+    user = User.query.filter_by(email=current_user.email).first()
+    user.surname = request.form["value"]
+    db.session.commit()
+    return redirect(url_for('user.profile', username=user.username))
+
+
+@user_blueprint.route('/user/addemployment/<human_id>', methods=['GET', 'POST'])
+@login_required
+def add_employment(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+
+    form = AddEmploymentForm(request.form)
+
+    if form.validate_on_submit():
+        emp = Employment(
+            human_id=human_id,
+            employer=form.employer.data,
+            position=form.position.data,
+#            start_date=form.start_date.data,
+#            end_date=form.end_date.data,
+            job_desc=form.job_desc.data
+        )
+        db.session.add(emp)
+        db.session.commit()
+        flash('New employer added.', 'success')
+
+        return redirect(url_for('user.employment', human_id=human_id))
+
+    return render_template('user/addemployment.html', username=user.username, email=user.email, form=form)
+
+
+@user_blueprint.route('/user/employment/<human_id>', methods=['GET'])
+@login_required
+def employment(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+
+    emp = Employment.query.filter_by(human_id=human_id).all()
+
+    return render_template('user/employment.html', emp=emp, human_id=human_id, username=user.username, email=user.email)
+
+
+@user_blueprint.route('/user_edit_employer/<emp_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_employer(emp_id):
+    emp = Employment.query.filter_by(id=emp_id).first()
+    emp.employer = request.form["value"]
+    db.session.commit()
+    return redirect(url_for('user.employment', human_id=emp.human_id))
+
+
+@user_blueprint.route('/user/addeducation/<human_id>', methods=['GET', 'POST'])
+@login_required
+def add_education(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User %s not found.' % username, 'danger')
+        return redirect(url_for('main.home'))
+
+    form = AddEducationForm(request.form)
+
+    if form.validate_on_submit():
+        ed = Education(
+            human_id=human_id,
+            educational_institution=form.educational_institution.data,
+            course_studied=form.course_studied.data
+#            start_date=form.start_date.data,
+#            end_date=form.end_date.data,
+#             job_desc=form.job_desc.data
+        )
+        db.session.add(ed)
+        db.session.commit()
+        flash('New educational details added.', 'success')
+
+        # return redirect(url_for('user.employment', human_id=human_id))
+        return redirect(url_for('user.profile', username=user.username))
+
+    return render_template('user/addeducation.html', username=user.username, email=user.email, form=form)
+
+
+
+@user_blueprint.route('/employment/<human_id>', methods=['GET'])
+@login_required
+def list_employment(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User not found', 'danger')
+        return redirect(url_for('main.home'))
+
+    emp = Employment.query.filter_by(human_id=human_id).all()
+
+    data = {'employmentlist': emp}
+    form = EmploymentListForm(data=MultiDict(data))
+
+    return render_template('user/test.html', form=form)

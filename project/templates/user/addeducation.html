@@ -1,0 +1,20 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Employment History</h2></td><br>
+<td><h2>User:  {{ username }}</h2></td><br>
+<td><h2>Email: {{ email }}</h2></td><br>
+
+<br>
+<form role="form" method="post" action="">
+  {{ form.csrf_token }}
+  Educational Institution:<br>
+    {{ form.educational_institution(placeholder="Educational Institution") }}<br>
+  Course Studied:<br>
+    {{ form.course_studied(placeholder="Course Studied") }}<br>
+  <button class="btn btn-success" type="submit">Submit</button>
+  <br><br>
+</form>
+
+{% endblock %}

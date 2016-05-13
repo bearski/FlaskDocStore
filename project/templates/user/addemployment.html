@@ -1,0 +1,22 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Employment History</h2></td><br>
+<td><h2>User:  {{ username }}</h2></td><br>
+<td><h2>Email: {{ email }}</h2></td><br>
+
+<br>
+<form role="form" method="post" action="">
+  {{ form.csrf_token }}
+  Employer:<br>
+    {{ form.employer(placeholder="employer") }}<br>
+  Position:<br>
+    {{ form.position(placeholder="position") }}<br>
+  Job Description:<br>
+    {{ form.job_desc(placeholder="job desc") }}<br>
+  <button class="btn btn-success" type="submit">Submit</button>
+  <br><br>
+</form>
+
+{% endblock %}
