@@ -1,0 +1,25 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Employment History</h2></td><br>
+
+<form action='my-action' method='post'>
+    {{ form.hidden_tag() }}
+
+    {% for emp in form.employmentlist %}
+        Employer:  {{ emp.data.employer }}<br>
+        Position:  {{ emp.data.position }}<br>
+        Job Desc:  {{ emp.data.job_desc }}<br>
+        Started:   {{ emp.data.start_date }}<br>
+        End:       {{ emp.data.end_date }}<br>
+        <a href="{{ url_for('user.employment_edit', emp_id=emp.data.id) }}">edit</a><br>
+        <br><br>
+    {% endfor %}
+
+</form>
+
+<p><a href="/user/employment_add/{{ human_id }}"</a>Add new employment details</p>
+
+{% endblock %}

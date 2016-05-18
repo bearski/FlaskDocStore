@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Add New Employment</h2></td><br>
+
+<br>
+<form role="form" method="post" action="">
+  {{ form.hidden_tag() }}
+  Employer:<br>
+    {{ form.employer(placeholder="employer") }}<br><br>
+  Position:<br>
+    {{ form.position(placeholder="position") }}<br><br>
+  Job Description:<br>
+    {{ form.job_desc(placeholder="job desc") }}<br><br>
+  Start Date:<br>
+    {{ form.start_date(placeholder="start date") }}<br><br>
+  End Date:<br>
+    {{ form.end_date(placeholder="end date") }}<br>
+  <br>
+  <button class="btn btn-success" type="submit">Submit</button>
+  <br><br>
+</form>
+
+{% endblock %}

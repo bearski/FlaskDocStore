@@ -97,7 +97,5 @@ def insert_lookup_data():
     db.session.commit()
 
 
-
-
 if __name__ == '__main__':
     manager.run()

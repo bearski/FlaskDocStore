@@ -2,7 +2,9 @@
 
 
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, SelectField, FieldList, FormField
+from wtforms import (StringField, PasswordField, SelectField, FieldList,
+    FormField, TextAreaField
+)
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 from wtforms.fields.html5 import DateField
 
@@ -66,28 +68,29 @@ gender = [
 class EditPersonalForm(Form):
     firstname = StringField('firstname', validators=[Optional()])
     lastname = StringField('lastname', validators=[Optional()])
-    birthdate = StringField('birthdate', validators=[Optional()])
-    birthdate = DateField('DatePicker', format('%Y-%m-%d'))
-    gender = SelectField('Gender', choices=gender)
+    # birthdate = StringField('birthdate', validators=[Optional()])
+    birthdate = DateField('birthdate', format('%Y-%m-%d'))
+    gender = SelectField('gender', choices=gender)
 
 
-class AddEmploymentForm(Form):
+class EmploymentForm(Form):
+    id = StringField('id', validators=[DataRequired()])
     human_id = StringField('human_id', validators=[Optional()])
     employer = StringField('employer', validators=[Optional()])
     position = StringField('position', validators=[Optional()])
-    # start_date = DateField('DatePicker', format('%Y-%m-%d'))
-    # end_date = DateField('DatePicker', format('%Y-%m-%d'))
-    job_desc = StringField('job_desc', validators=[Optional()])
+    start_date = DateField('start_date', validators=[Optional()])
+    end_date = DateField('end_date', validators=[Optional()])
+    job_desc = TextAreaField('job_desc', validators=[Optional()])
 
 
 class EmploymentListForm(Form):
-    employmentlist = FieldList(FormField(AddEmploymentForm))
+    employmentlist = FieldList(FormField(EmploymentForm))
 
 
-class AddEducationForm(Form):
+class EducationForm(Form):
     human_id = StringField('human_id', validators=[Optional()])
     educational_institution = StringField('educational_institution', validators=[Optional()])
     course_studied = StringField('course_studied', validators=[Optional()])
     # start_date = DateField('DatePicker', format('%Y-%m-%d'))
     # end_date = DateField('DatePicker', format('%Y-%m-%d'))
-    accolades = StringField('job_desc', validators=[Optional()])
+    accolades = TextAreaField('accolades', validators=[Optional()])

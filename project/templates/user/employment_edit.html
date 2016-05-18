@@ -1,0 +1,99 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Edit Employment Details</h2></td><br>
+<td><h3>User:  {{ current_user.username }}</h3></td><br>
+<td><h3>Email: {{ current_user.email }}</h3></td><br>
+
+<form>
+    Employer:<br>
+    <a  href="#"
+        id="employer"
+        data-type="text"
+        data-url="/employment_edit_employer/{{ emp.id }}"
+        data-pk="{{ emp.id }}"
+        data-title="Update Employer">{{ emp.employer }}
+    </a><br>
+
+    Position:<br>
+    <a  href="#"
+        id="position"
+        data-type="text"
+        data-url="/employment_edit_position/{{ emp.id }}"
+        data-pk="{{ emp.id }}"
+        data-title="Update Position">{{ emp.position }}
+    </a><br>
+
+    Job Description:<br>
+    <a  href="#"
+        id="job_desc"
+        data-type="text"
+        data-url="/employment_edit_description/{{ emp.id }}"
+        data-pk="{{ emp.id }}"
+        data-title="Update Job Description">{{ emp.job_desc }}
+    </a>
+    <br>
+
+    Start Date:<br>
+    <a  href="#"
+        id="start_date"
+        data-type="date"
+        data-url="/employment_edit_start_date/{{ emp.id }}"
+        data-pk="{{ emp.id }}"
+        data-title="Start Date">{{ emp.start_date }}
+    </a>
+    <br>
+
+    End Date:<br>
+    <a  href="#"
+        id="end_date"
+        data-type="date"
+        data-url="/employment_edit_end_date/{{ emp.id }}"
+        data-pk="{{ emp.id }}"
+        data-title="End Date">{{ emp.end_date }}
+    </a>
+    <br>
+</form>
+
+<br><br>
+<p><a href="{{ url_for('user.employment_list', human_id=current_user.id) }}"</a>Back to Employment History</p>
+
+<script>
+        $('#employer').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+
+        $('#position').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+
+        $('#job_desc').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+
+        $('#start_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+
+        $('#end_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+</script>
+
+
+<br><br>
+
+
+{% endblock %}
