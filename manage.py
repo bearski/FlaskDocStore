@@ -9,7 +9,7 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from project import app, db
-from project.models import User, EducationalInstitutionType
+from project.models import User, EducationalInstitutionType, Gender
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 
@@ -67,7 +67,6 @@ def create_admin():
         User(
             email="ad@min.com",
             password="admin",
-#        username="admin",
             admin=True,
             confirmed=True,
             confirmed_on=datetime.datetime.now()
@@ -78,24 +77,19 @@ def create_admin():
 
 @manager.command
 def insert_lookup_data():
-    """Inserts into EducationalInstitutionType"""
-    db.session.add(
-        EducationalInstitutionType(
-            educational_institution_type="High School"
-        )
-    )
-    db.session.add(
-        EducationalInstitutionType(
-            educational_institution_type="University"
-        )
-    )
-    db.session.add(
-        EducationalInstitutionType(
-            educational_institution_type="Technikons / Universities of Technology"
-        )
-    )
+    #Inserts into EducationalInstitutionType
+    db.session.add(EducationalInstitutionType(description="High School"))
+    db.session.add(EducationalInstitutionType(description="University"))
+    db.session.add(EducationalInstitutionType(
+        description="Technikons / Universities of Technology"))
+    db.session.commit()
+
+    # Inserts into Gender
+    db.session.add(Gender(gender="Female"))
+    db.session.add(Gender(gender="Male"))
     db.session.commit()
 
 
 if __name__ == '__main__':
     manager.run()
+

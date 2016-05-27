@@ -13,6 +13,8 @@
 <td><h2>{{ user.username }}</h2></td><br>
 <td>Email: {{ user.email }}</td><br>
 
+<form role="form"  action="">
+{{ form.csrf_token }}
 <td>
     First Name:  <a
         href="#"
@@ -35,21 +37,52 @@
     </a>
 </td><br>
 
-<td>Date of Birth: {{ user.birthdate }}</td><br>
-<td>Gender: {{ user.gender }}</td><br>
+<td>
+    Date of Birth:  <a
+        href="#"
+        id="birthdate"
+        data-type="text"
+        data-url="/user_edit_dob"
+        data-pk="{{user.email}}"
+        data-title="update date of birth">{{ user.birthdate }}
+    </a>
+</td><br>
+
+
+<td>
+    Gender
+    <a href="#"
+       id="gender"
+       data-type="select"
+       data-url="/user_edit_gender"
+       data-pk="{{user.email}}"
+       data-title="Select gender">{{ form.gender }}
+    </a>
+</td><br>
+</form>
+
 
 <script>
-        $('#firstname').editable({
-            placement: "right",
-            error: function (errors) {
-            }
-        });
-
-        $('#surname').editable({
-            placement: "right",
-            error: function (errors) {
-            }
-        });
+    $('#firstname').editable({
+        placement: "right",
+        error: function (errors) {
+        }
+    });
+    $('#surname').editable({
+        placement: "right",
+        error: function (errors) {
+        }
+    });
+    $('#birthdate').editable({
+        placement: "right",
+        error: function (errors) {
+        }
+    });
+    $('#gender').editable({
+        placement: "right",
+        error: function (errors) {
+        }
+    });
 </script>
 
 

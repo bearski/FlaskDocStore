@@ -1,0 +1,50 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Educational History</h2></td><br>
+
+<form action='my-action' method='post'>
+    {{ form.hidden_tag() }}
+    {% for ed in form.educationlist %}
+
+        <table class="table table-borderless" cellspacing=0 cellpadding=0>
+            <thead>
+                <tr>
+                    <th class="col-sm-6"><h2><a
+                            href="{{ url_for('user.education_edit', id=ed.data.id) }}"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="click to edit">
+                            {{ ed.data.educational_institution }}
+                    </a></h2></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Start Date</b></td>
+                    <td><b>Completion Date</b></td>
+                </tr>
+                <tr>
+                    <td>{{ ed.data.start_date }}</td>
+                    <td>{{ ed.data.end_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Course Studied</b></td>
+                </tr>
+                <tr>
+                    <td>{{ ed.data.course_studied }}</td>
+                </tr>
+            </tbody>
+        </table>    
+        <a href="{{ url_for('user.education_edit', id=ed.data.id) }}">edit</a><br>
+        <br><br>
+    {% endfor %}
+
+</form>
+
+<br><br>
+<p><a href="/user/education_add/{{ human_id }}"</a>Add new education details</p>
+
+{% endblock %}

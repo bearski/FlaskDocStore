@@ -14,9 +14,6 @@ from flask_mail import Mail
 from flask.ext.debugtoolbar import DebugToolbarExtension
 from flask.ext.sqlalchemy import SQLAlchemy
 
-# from project.momentjs import momentjs
-
-
 ################
 #### config ####
 ################
@@ -24,9 +21,6 @@ from flask.ext.sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 app.config.from_object('project.config.ProductionConfig')
-
-#  moments
-# app.jinja_env.globals['momentjs'] = momentjs
 
 ####################
 #### extensions ####

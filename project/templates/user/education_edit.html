@@ -1,0 +1,81 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Edit Educational Details</h2></td><br>
+<td><h3>User:  {{ current_user.username }}</h3></td><br>
+<td><h3>Email: {{ current_user.email }}</h3></td><br>
+
+<form>
+    Educational Institution:<br>
+    <a  href="#"
+        id="educational_institution"
+        data-type="text"
+        data-url="/education_edit_educational_institution/{{ ed.id }}"
+        data-pk="{{ ed.id }}"
+        data-title="Educational Institution">{{ ed.educational_institution }}
+    </a><br>
+
+    Course Studied:<br>
+    <a  href="#"
+        id="course_studied"
+        data-type="text"
+        data-url="/education_edit_course_studied/{{ ed.id }}"
+        data-pk="{{ ed.id }}"
+        data-title="Update Course">{{ ed.course_studied }}
+    </a><br>
+
+    Start Date:<br>
+    <a  href="#"
+        id="start_date"
+        data-type="date"
+        data-url="/education_edit_start_date/{{ ed.id }}"
+        data-pk="{{ ed.id }}"
+        data-title="Start Date">{{ ed.start_date }}
+    </a>
+    <br>
+
+    End Date:<br>
+    <a  href="#"
+        id="end_date"
+        data-type="date"
+        data-url="/education_edit_end_date/{{ ed.id }}"
+        data-pk="{{ ed.id }}"
+        data-title="End Date">{{ ed.end_date }}
+    </a>
+    <br>
+</form>
+
+<br><br>
+<p><a href="{{ url_for('user.education_list', human_id=current_user.id) }}"</a>Academic Record</p>
+
+<br>
+
+
+<script>
+        $('#educational_institution').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#course_studied').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#start_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#end_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+</script>
+
+<br><br>
+
+{% endblock %}

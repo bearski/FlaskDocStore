@@ -3,23 +3,29 @@
 {% block content %}
 
 <td><h2>Add New Employment</h2></td><br>
+<td><h2>User:  {{ username }}</h2></td><br>
+<td><h2>Email: {{ email }}</h2></td><br>
 
 <br>
+
 <form role="form" method="post" action="">
   {{ form.hidden_tag() }}
+    <input type="hidden" name="human_id" value={{ human_id }}>
   Employer:<br>
-    {{ form.employer(placeholder="employer") }}<br><br>
-  Position:<br>
-    {{ form.position(placeholder="position") }}<br><br>
-  Job Description:<br>
-    {{ form.job_desc(placeholder="job desc") }}<br><br>
+    {{ form.employer(placeholder="Employer") }}<br><br>
   Start Date:<br>
-    {{ form.start_date(placeholder="start date") }}<br><br>
+    {{ form.start_date(placeholder="start_date") }}<br><br>
   End Date:<br>
-    {{ form.end_date(placeholder="end date") }}<br>
-  <br>
+    {{ form.end_date(placeholder="end_date") }}<br><br>
+  Position:<br>
+    {{ form.position }}<br><br>
+  Job Description:<br>
+    {{ form.job_desc(placeholder="Job Description") }}<br><br>
   <button class="btn btn-success" type="submit">Submit</button>
   <br><br>
 </form>
 
 {% endblock %}
+
+
+

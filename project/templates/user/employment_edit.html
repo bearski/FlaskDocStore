@@ -5,7 +5,6 @@
 
 <td><h2>Edit Employment Details</h2></td><br>
 <td><h3>User:  {{ current_user.username }}</h3></td><br>
-<td><h3>Email: {{ current_user.email }}</h3></td><br>
 
 <form>
     Employer:<br>
@@ -14,7 +13,7 @@
         data-type="text"
         data-url="/employment_edit_employer/{{ emp.id }}"
         data-pk="{{ emp.id }}"
-        data-title="Update Employer">{{ emp.employer }}
+        data-title="Educational Institution">{{ emp.employer }}
     </a><br>
 
     Position:<br>
@@ -23,7 +22,7 @@
         data-type="text"
         data-url="/employment_edit_position/{{ emp.id }}"
         data-pk="{{ emp.id }}"
-        data-title="Update Position">{{ emp.position }}
+        data-title="Position">{{ emp.position }}
     </a><br>
 
     Job Description:<br>
@@ -32,9 +31,8 @@
         data-type="text"
         data-url="/employment_edit_description/{{ emp.id }}"
         data-pk="{{ emp.id }}"
-        data-title="Update Job Description">{{ emp.job_desc }}
-    </a>
-    <br>
+        data-title="Job Description">{{ emp.job_desc }}
+    </a><br>
 
     Start Date:<br>
     <a  href="#"
@@ -55,6 +53,7 @@
         data-title="End Date">{{ emp.end_date }}
     </a>
     <br>
+
 </form>
 
 <br><br>
@@ -66,25 +65,21 @@
             error: function (errors) {
             }
         });
-
         $('#position').editable({
             placement: "right",
             error: function (errors) {
             }
         });
-
         $('#job_desc').editable({
             placement: "right",
             error: function (errors) {
             }
         });
-
         $('#start_date').editable({
             placement: "right",
             error: function (errors) {
             }
         });
-
         $('#end_date').editable({
             placement: "right",
             error: function (errors) {

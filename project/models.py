@@ -3,7 +3,8 @@
 import datetime
 from project import db, bcrypt
 from hashlib import md5
-from sqlalchemy import Enum
+# from sqlalchemy import Enum
+
 
 class Address(db.Model):
     __tablename__ = "address"
@@ -33,6 +34,15 @@ class Telephone(db.Model):
         return '<id {}'.format(self.id)
 
 
+class Gender(db.Model):
+    __tablename__ = "gender"
+    id = db.Column(db.Integer, primary_key=True)
+    gender = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return self.gender
+
+
 class User(db.Model):
     __tablename__ = "human"
     id = db.Column(db.Integer, primary_key=True)
@@ -41,17 +51,23 @@ class User(db.Model):
     firstname = db.Column(db.String(60), nullable=True)
     surname = db.Column(db.String(60), nullable=True)
     about_me = db.Column(db.String(400), nullable=True)
-    gender = db.Column(Enum("female", "male", name="gender_enum"), nullable=True)
     birthdate = db.Column(db.DateTime, nullable=True)
     password = db.Column(db.String, nullable=False)
-    registered_on = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    registered_on = db.Column(db.DateTime, nullable=False,
+                              default=datetime.datetime.utcnow)
     admin = db.Column(db.Boolean, nullable=False, default=False)
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=True)
-    telephone_id = db.Column(db.Integer, db.ForeignKey('telephone.id'), nullable=True)
+    address_id = db.Column(db.Integer, db.ForeignKey('address.id'),
+                           nullable=True)
+    telephone_id = db.Column(db.Integer, db.ForeignKey('telephone.id'),
+                             nullable=True)
+    gender_id = db.Column(db.Integer, db.ForeignKey('gender.id'))
+    gender = db.relationship('Gender', backref=db.backref('posts',
+                                                          lazy='dynamic'))
 
-    def __init__(self, email, password, admin=False, confirmed=False, confirmed_on=None):
+    def __init__(self, email, password, admin=False, confirmed=False,
+                 confirmed_on=None):
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.admin = admin
@@ -72,10 +88,11 @@ class User(db.Model):
         return self.id
 
     def avatar(self, size):
-        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
+        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(
+            self.email.encode('utf-8')).hexdigest(), size)
 
     def __repr__(self):
-        return '<email {}'.format(self.email)
+        return '<email: {}'.format(self.email)
 
 
 class Employment(db.Model):
@@ -93,12 +110,12 @@ class Employment(db.Model):
 
 
 class EducationalInstitutionType(db.Model):
-    __tablename__ = "educationalinstitutiontype"
+    __tablename__ = "educational_institution_type"
     id = db.Column(db.Integer, primary_key=True)
-    educational_institution_type = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<id {}'.format(self.id)
+        return self.description
 
 
 class Education(db.Model):
@@ -111,9 +128,14 @@ class Education(db.Model):
     start_date = db.Column(db.DateTime, nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)
     accolades = db.Column(db.String(400), nullable=True)
+    educational_institution_type_id = db.Column(db.Integer,
+                                                db.ForeignKey('educational_institution_type.id'))
+    educational_institution_type = db.relationship('EducationalInstitutionType',
+                                                   backref=db.backref('education',
+                                                                      lazy='dynamic'))
 
     def __repr__(self):
-        return '<id {}'.format(self.id)
+        return '<id: {}'.format(self.id)
 
 
 # publication

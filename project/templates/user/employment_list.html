@@ -7,19 +7,49 @@
 
 <form action='my-action' method='post'>
     {{ form.hidden_tag() }}
-
     {% for emp in form.employmentlist %}
-        Employer:  {{ emp.data.employer }}<br>
-        Position:  {{ emp.data.position }}<br>
-        Job Desc:  {{ emp.data.job_desc }}<br>
-        Started:   {{ emp.data.start_date }}<br>
-        End:       {{ emp.data.end_date }}<br>
-        <a href="{{ url_for('user.employment_edit', emp_id=emp.data.id) }}">edit</a><br>
-        <br><br>
+        <table class="table table-borderless" cellspacing=0 cellpadding=0>
+            <thead>
+                <tr>
+                    <th class="col-sm-6"><h2><a
+                            href="{{ url_for('user.employment_edit', emp_id=emp.data.id) }}"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="click to edit">
+                            {{ emp.data.employer }}
+                    </a></h2></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Start Date</b></td>
+                    <td><b>End Date</b></td>
+                </tr>
+                <tr>
+                    <td>{{ emp.data.start_date }}</td>
+                    <td>{{ emp.data.end_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Position</b></td>
+                </tr>
+                <tr>
+                    <td>{{ emp.data.position }}</td>
+                </tr>
+                <tr>
+                    <td><b>Job Description</b></td>
+                </tr>
+                <tr>
+                    <td>{{ emp.data.job_desc }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{{ url_for('user.employment_edit', emp_id=emp.data.id) }}">edit</a>
     {% endfor %}
-
 </form>
+
+<br><br>
 
 <p><a href="/user/employment_add/{{ human_id }}"</a>Add new employment details</p>
 
 {% endblock %}
+

@@ -23,6 +23,7 @@ class BaseConfig(object):
 
     # db connection
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    # SQLALCHEMY_ECHO=True
 
 class TestingConfig(BaseConfig):
     """Testing configuration."""

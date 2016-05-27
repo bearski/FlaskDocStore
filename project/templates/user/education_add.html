@@ -2,17 +2,25 @@
 
 {% block content %}
 
-<td><h2>Employment History</h2></td><br>
+<td><h2>Add New Educational Details</h2></td><br>
 <td><h2>User:  {{ username }}</h2></td><br>
-<td><h2>Email: {{ email }}</h2></td><br>
 
 <br>
 <form role="form" method="post" action="">
-  {{ form.csrf_token }}
+  {{ form.hidden_tag() }}
+  <input type="hidden" name="human_id" value={{ human_id }}>
   Educational Institution:<br>
-    {{ form.educational_institution(placeholder="Educational Institution") }}<br>
+    {{ form.educational_institution(placeholder="Educational Institution") }}<br><br>
+  Educational Institution Type:<br>
+    {{ form.educational_institution_type_list }}<br><br>
   Course Studied:<br>
-    {{ form.course_studied(placeholder="Course Studied") }}<br>
+    {{ form.course_studied(placeholder="Course Studied") }}<br><br>
+  Start Date:<br>
+    {{ form.start_date(placeholder="start_date") }}<br><br>
+  Completion Date:<br>
+    {{ form.end_date(placeholder="end_date") }}<br><br>
+  accolades:<br>
+    {{ form.accolades(placeholder="accolades") }}<br><br>
   <button class="btn btn-success" type="submit">Submit</button>
   <br><br>
 </form>
