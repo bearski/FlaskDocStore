@@ -63,7 +63,7 @@ class User(db.Model):
     telephone_id = db.Column(db.Integer, db.ForeignKey('telephone.id'),
                              nullable=True)
     gender_id = db.Column(db.Integer, db.ForeignKey('gender.id'))
-    gender = db.relationship('Gender', backref=db.backref('posts',
+    gender = db.relationship('Gender', backref=db.backref('human',
                                                           lazy='dynamic'))
 
     def __init__(self, email, password, admin=False, confirmed=False,
@@ -138,8 +138,87 @@ class Education(db.Model):
         return '<id: {}'.format(self.id)
 
 
-# publication
+class PublicationCategory(db.Model):
+    __tablename__ = "publication_category"
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(200), nullable=True)
+
+    def __repr__(self):
+        return self.category
+
+
+class Publication(db.Model):
+    __tablename__ = "publication"
+    id = db.Column(db.Integer, primary_key=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
+    title = db.Column(db.String(10), nullable=False)
+    authors = db.Column(db.String(250), nullable=True)
+    publication_date = db.Column(db.DateTime, nullable=True)
+    publisher = db.Column(db.String(250), nullable=True)
+    publication_url = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.String(250), nullable=True)
+    publication_category_id = db.Column(db.Integer,
+                                        db.ForeignKey('publication_category.id'))
+    publication_category = db.relationship('PublicationCategory',
+                                           backref=db.backref('publication',
+                                                              lazy='dynamic'))
+
+    def __repr__(self):
+        return self.id
+
+
+class PatentOffice(db.Model):
+    __tablename__ = "patent_office"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return self.name
+
+
+class PatentStatus(db.Model):
+    __tablename__ = "patent_status"
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+            return self.status
+
+
+class Patent(db.Model):
+    __tablename__ = "patent"
+    id = db.Column(db.Integer, primary_key=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(250), nullable=False)
+    patent_number = db.Column(db.String(20), nullable=False)
+    inventors = db.Column(db.String(250), nullable=False)
+    issue_date = db.Column(db.DateTime, nullable=True)
+    patent_office_id = db.Column(db.Integer, db.ForeignKey('patent_office.id'))
+    patent_office = db.relationship('PatentOffice', backref=db.backref('patent', lazy='dynamic'))
+    patent_status_id = db.Column(db.Integer, db.ForeignKey('patent_status.id'))
+    patent_status = db.relationship('PatentStatus', backref=db.backref('patent', lazy='dynamic'))
+    patent_url = db.Column(db.String(100), nullable=True)
+
+    def __repr__(self):
+        return self.status
+
+
+### IMPROVE THIS - look at list of certification providers
+class Certification(db.Model):
+    __tablename__ = "certification"
+    id = db.Column(db.Integer, primary_key=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
+    name = db.Column(db.String(250), nullable=True)
+    certification_number = db.Column(db.String(250), nullable=True)
+    issue_date = db.Column(db.DateTime, nullable=True)
+    expiry_date = db.Column(db.DateTime, nullable=True)
+    certification_url = db.Column(db.String(100), nullable=True)
+
+    def __repr__(self):
+        return self.id
+
+
 # presentations
-# patents
-# products
 # research

@@ -6,8 +6,8 @@
 <td><h2>Educational History</h2></td><br>
 
 <form action='my-action' method='post'>
-    {{ form.hidden_tag() }}
-    {% for ed in form.educationlist %}
+    {{ ed_form.hidden_tag() }}
+    {% for ed in ed_form.educationlist %}
 
         <table class="table table-borderless" cellspacing=0 cellpadding=0>
             <thead>

@@ -1,0 +1,137 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Edit Patent Details</h2></td><br>
+
+<form>
+    Title:<br>
+    <a  href="#"
+        id="title"
+        data-type="text"
+        data-url="/patent_edit_title/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Title">{{ pat.title }}
+    </a><br>
+
+    Inventors:<br>
+    <a  href="#"
+        id="inventors"
+        data-type="text"
+        data-url="/patent_edit_inventors/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Inventors">{{ pat.inventors }}
+    </a><br>
+
+    Patent Number:<br>
+    <a  href="#"
+        id="patent_number"
+        data-type="text"
+        data-url="/patent_edit_patent_number/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Category">{{ pat.patent_number }}
+    </a><br>
+
+    Issue Date:<br>
+    <a  href="#"
+        id="issue_date"
+        data-type="date"
+        data-url="/patent_edit_patent_date/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Issue Date">{{ pat.issue_date }}
+    </a>
+    <br>
+
+    Patent Office:<br>
+    <a  href="#"
+        id="patent_office"
+        data-type="text"
+        data-url="/patent_edit_patent_office/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Publisher">{{ pat.patent_office }}
+    </a>
+    <br>
+
+    Patent Status:<br>
+    <a  href="#"
+        id="patent_status"
+        data-type="text"
+        data-url="/patent_edit_patent_status/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="Publisher">{{ pat.patent_status }}
+    </a>
+    <br>
+
+    Description:<br>
+    <a  href="#"
+        id="description"
+        data-type="text"
+        data-url="/patent_edit_description/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="URL">{{ pat.description }}
+    </a>
+    <br>
+
+    Link to Patent:<br>
+    <a  href="#"
+        id="patent_url"
+        data-type="text"
+        data-url="/patent_edit_patent_url/{{ pat.id }}"
+        data-pk="{{ pat.id }}"
+        data-title="URL">{{ pat.patent_url }}
+    </a>
+    <br>
+</form>
+
+<br><br>
+<p><a href="{{ url_for('user.patent_list', human_id=current_user.id) }}"</a>Back to Publication History</p>
+
+<script>
+        $('#title').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#inventors').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#patent_number').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#issue_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#patent_office').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#patent_status').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#description').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#patent_url').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+
+</script>
+
+
+<br><br>
+
+{% endblock %}

@@ -5,7 +5,7 @@
 #### imports ####
 #################
 
-import os
+# import os
 
 from flask import Flask, render_template
 from flask.ext.login import LoginManager

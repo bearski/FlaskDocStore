@@ -1,0 +1,128 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Edit Publication Details</h2></td><br>
+
+<form>
+    Title:<br>
+    <a  href="#"
+        id="title"
+        data-type="text"
+        data-url="/publication_edit_title/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Title">{{ pub.title }}
+    </a><br>
+
+    Authors:<br>
+    <a  href="#"
+        id="authors"
+        data-type="text"
+        data-url="/publication_edit_authors/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Authors">{{ pub.authors }}
+    </a><br>
+
+    Publication Date:<br>
+    <a  href="#"
+        id="publication_date"
+        data-type="date"
+        data-url="/publication_edit_publication_date/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Publication Date">{{ pub.publication_date }}
+    </a>
+    <br>
+
+    Category:<br>
+    <a  href="#"
+        id="publication_category"
+        data-type="text"
+        data-url="/publication_edit_publication_category/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Category">{{ pub.publication_category }}
+    </a><br>
+
+    Publisher:<br>
+    <a  href="#"
+        id="publisher"
+        data-type="text"
+        data-url="/publication_edit_publisher/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Publisher">{{ pub.publisher }}
+    </a><br>
+
+    Synopsis:<br>
+    <a  href="#"
+        id="description"
+        data-type="text"
+        data-url="/publication_edit_description/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="Publisher">{{ pub.description }}
+    </a><br>
+
+    Link to Publication:<br>
+    <a  href="#"
+        id="publication_url"
+        data-type="text"
+        data-url="/publication_edit_publication_url/{{ pub.id }}"
+        data-pk="{{ pub.id }}"
+        data-title="URL">{{ pub.publication_url }}
+    </a>
+    <br>
+</form>
+
+<br><br>
+<p><a href="{{ url_for('user.publication_list', human_id=current_user.id) }}"</a>Back to Publication History</p>
+
+<br>
+{{ pub.publication_category_list }}
+<br>
+
+<script>
+        $('#title').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#authors').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#publisher').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#publication_date').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#description').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#publication_url').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#publication_category').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+        $('#description').editable({
+            placement: "right",
+            error: function (errors) {
+            }
+        });
+</script>
+
+
+<br><br>
+
+{% endblock %}

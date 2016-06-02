@@ -14,7 +14,7 @@
 <td>Email: {{ user.email }}</td><br>
 
 <form role="form"  action="">
-{{ form.csrf_token }}
+{{ form.hidden_tag() }}
 <td>
     First Name:  <a
         href="#"
@@ -53,10 +53,10 @@
     Gender
     <a href="#"
        id="gender"
-       data-type="select"
+       data-type="text"
        data-url="/user_edit_gender"
        data-pk="{{user.email}}"
-       data-title="Select gender">{{ form.gender }}
+       data-title="Gender">{{ user.gender_selection }}
     </a>
 </td><br>
 </form>

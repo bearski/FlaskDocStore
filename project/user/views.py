@@ -8,16 +8,22 @@ import datetime
 
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask.ext.login import login_user, logout_user, login_required, current_user
+
 from sqlalchemy import desc
+
+from project.token import generate_confirmation_token, confirm_token
+from project.decorators import check_confirmed
+from project.email import send_email
+from project import db, bcrypt
 
 from project.models import (
     User,
     Employment,
-    Education
+    Education,
+    Publication,
+    Patent
 )
 
-from project.email import send_email
-from project import db, bcrypt
 from .forms import (
     LoginForm,
     RegisterForm,
@@ -26,10 +32,13 @@ from .forms import (
     EmploymentListForm,
     EducationForm,
     EducationFormListForm,
-    EditPersonalForm
+    EditPersonalForm,
+    PublicationForm,
+    PublicationFormListForm,
+    PatentForm,
+    PatentFormListForm
 )
-from project.token import generate_confirmation_token, confirm_token
-from project.decorators import check_confirmed
+
 
 ################
 #### config ####
@@ -212,12 +221,13 @@ def user_edit_gender():
     return redirect(url_for('user.profile', username=user.username))
 
 
-@user_blueprint.route('/user/employment_add/<human_id>', methods=['GET', 'POST'])
+@user_blueprint.route('/user/employment_add/<human_id>',
+                      methods=['GET', 'POST'])
 @login_required
 def employment_add(human_id):
     user = User.query.filter_by(id=human_id).first()
     if user == None:
-        flash('User %s not found.' % username, 'danger')
+        flash('User not found.', 'danger')
         return redirect(url_for('main.home'))
 
     form = EmploymentForm(request.form)
@@ -260,14 +270,17 @@ def employment_list(human_id):
         flash('User not found', 'danger')
         return redirect(url_for('main.home'))
 
-    emp = Employment.query.filter_by(human_id=user.id).order_by(desc(Employment.start_date))
+    emp = Employment.query.filter_by(human_id=user.id).order_by(
+        desc(Employment.start_date))
+
     if emp == None:
         flash('No employment details saved', 'danger')
 
     data = {'employmentlist': emp}
     form = EmploymentListForm(data=data)
 
-    return render_template('user/employment_list.html', form=form, human_id=user.id)
+    return render_template('user/employment_list.html', form=form,
+                           human_id=user.id)
 
 
 @user_blueprint.route('/employment_edit/<emp_id>', methods=['GET'])
@@ -276,7 +289,8 @@ def employment_edit(emp_id):
     emp = Employment.query.filter_by(id=emp_id).first()
     if emp == None:
         flash('No Employment Details.  Please add', 'danger')
-        return redirect(url_for('user.employment_add', human_id=current_user.id))
+        return redirect(url_for('user.employment_add',
+                                human_id=current_user.id))
 
     return render_template('user/employment_edit.html', emp=emp)
 
@@ -299,7 +313,8 @@ def employment_edit_position(emp_id):
     return redirect(url_for('user.employment_list', human_id=emp.human_id))
 
 
-@user_blueprint.route('/employment_edit_description/<emp_id>', methods=['POST'])
+@user_blueprint.route('/employment_edit_description/<emp_id>',
+                      methods=['POST'])
 @login_required
 def employment_edit_description(emp_id):
     emp = Employment.query.filter_by(id=emp_id).first()
@@ -308,7 +323,8 @@ def employment_edit_description(emp_id):
     return redirect(url_for('user.employment_list', human_id=emp.human_id))
 
 
-@user_blueprint.route('/employment_edit_start_date/<emp_id>', methods=['POST'])
+@user_blueprint.route('/employment_edit_start_date/<emp_id>',
+                      methods=['POST'])
 @login_required
 def employment_edit_start_date(emp_id):
     emp = Employment.query.filter_by(id=emp_id).first()
@@ -326,12 +342,13 @@ def employment_edit_end_date(emp_id):
     return redirect(url_for('user.employment_list', human_id=emp.human_id))
 
 
-@user_blueprint.route('/user/education_add/<human_id>', methods=['GET', 'POST'])
+@user_blueprint.route('/user/education_add/<human_id>',
+                      methods=['GET', 'POST'])
 @login_required
 def education_add(human_id):
     user = User.query.filter_by(id=human_id).first()
     if user == None:
-        flash('User %s not found.' % username, 'danger')
+        flash('User not found.', 'danger')
         return redirect(url_for('main.home'))
 
     form = EducationForm(request.form)
@@ -373,16 +390,18 @@ def education_list(human_id):
         flash('User not found', 'danger')
         return redirect(url_for('main.home'))
 
-    ed = Education.query.filter_by(human_id=user.id).order_by(desc(Education.start_date))
+    ed = Education.query.filter_by(human_id=user.id).order_by(
+        desc(Education.start_date))
+
     if ed == None:
         flash('No educational details saved', 'danger')
 
-    data = {'educationlist': ed}
+    ed_data = {'educationlist': ed}
 
-    form = EducationFormListForm(data=data)
+    ed_form = EducationFormListForm(data=ed_data)
 
-    return render_template('user/education_list.html', form=form,
-                           human_id=user.id)
+    return render_template('user/education_list.html', human_id=human_id,
+                           ed_form=ed_form)
 
 
 @user_blueprint.route('/education_edit/<id>', methods=['GET'])
@@ -433,3 +452,288 @@ def education_end_start_date(id):
     return redirect(url_for('user.education_list', human_id=ed.human_id))
 
 
+@user_blueprint.route('/user/publication_add/<human_id>',
+                      methods=['GET', 'POST'])
+@login_required
+def publication_add(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User not found.', 'danger')
+        return redirect(url_for('main.home'))
+
+    form = PublicationForm(request.form)
+
+    if form.validate_on_submit():
+        publication_date = None
+        if form.publication_date.data != '':
+            publication_date = form.publication_date.data
+
+        pub = Publication(
+            human_id=human_id,
+            title=form.title.data,
+            authors=form.authors.data,
+            publication_date=publication_date,
+            publisher=form.publisher.data,
+            publication_url=form.publication_url.data,
+            description=form.description.data,
+            publication_category=form.publication_category_list.data
+        )
+        db.session.add(pub)
+        db.session.commit()
+        flash('New publication details added.', 'success')
+
+        return redirect(url_for('user.publication_list', human_id=human_id))
+
+    return render_template('user/publication_add.html', human_id=human_id,
+                           form=form)
+
+
+@user_blueprint.route('/user/publication_list/<human_id>', methods=['GET'])
+@login_required
+def publication_list(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User not found', 'danger')
+        return redirect(url_for('main.home'))
+
+    pub = Publication.query.filter_by(human_id=human_id).order_by(
+        desc(Publication.publication_date))
+
+    if pub == None:
+        flash('No publication details saved', 'danger')
+
+    pub_data = {'publicationlist': pub}
+    pub_form = PublicationFormListForm(data=pub_data)
+
+    return render_template('user/publication_list.html', human_id=human_id,
+                           pub_form=pub_form)
+
+
+@user_blueprint.route('/publication_edit/<id>', methods=['GET'])
+@login_required
+def publication_edit(id):
+    pub = Publication.query.filter_by(id=id).first()
+    if pub == None:
+        flash('No Publication Details.  Please add', 'danger')
+        return redirect(url_for('main.home'))
+
+    form = PublicationFormListForm(pub=pub)
+
+    return render_template('user/publication_edit.html', pub=pub, form=form)
+
+
+@user_blueprint.route('/publication_edit_title/<id>', methods=['POST'])
+@login_required
+def publication_edit_title(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.title = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_authors/<id>', methods=['POST'])
+@login_required
+def publication_edit_authors(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.authors = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_publisher/<id>', methods=['POST'])
+@login_required
+def publication_edit_publisher(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.publisher = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_publication_date/<id>',
+                      methods=['POST'])
+@login_required
+def publication_edit_publication_date(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.publication_date = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_description/<id>', methods=['POST'])
+@login_required
+def publication_edit_description(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.description = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_publication_url/<id>',
+                      methods=['POST'])
+@login_required
+def publication_edit_publication_url(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.publication_url = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/publication_edit_publication_category/<id>',
+                      methods=['POST'])
+@login_required
+def publication_edit_publication_category(id):
+    pub = Publication.query.filter_by(id=id).first()
+    pub.publication_category = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.publication_list', human_id=pub.human_id))
+
+
+@user_blueprint.route('/user/patent_add/<human_id>', methods=['GET', 'POST'])
+@login_required
+def patent_add(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User not found.', 'danger')
+        return redirect(url_for('main.home'))
+
+    form = PatentForm(request.form)
+
+    if form.validate_on_submit():
+        issue_date = None
+
+        if form.issue_date.data != '':
+            issue_date = form.issue_date.data
+
+        pat = Patent(
+            human_id=human_id,
+            title=form.title.data,
+            description=form.description.data,
+            patent_number=form.patent_number.data,
+            inventors=form.inventors.data,
+            issue_date=issue_date,
+            patent_office=form.patent_office_list.data,
+            patent_status=form.patent_status_list.data,
+            patent_url=form.patent_url.data
+        )
+        db.session.add(pat)
+        db.session.commit()
+        flash('New patent details added.', 'success')
+
+        return redirect(url_for('user.patent_list', human_id=human_id))
+
+    return render_template('user/patent_add.html', human_id=human_id,
+                           form=form)
+
+
+@user_blueprint.route('/user/patent_list/<human_id>', methods=['GET'])
+@login_required
+def patent_list(human_id):
+    user = User.query.filter_by(id=human_id).first()
+    if user == None:
+        flash('User not found', 'danger')
+        return redirect(url_for('main.home'))
+
+    pat = Patent.query.filter_by(human_id=human_id).order_by(desc(Patent.issue_date))
+    if pat == None:
+        flash('No patent details saved')
+
+    pat_data = {'patentlist': pat}
+    pat_form = PatentFormListForm(data=pat_data)
+
+    return render_template('user/patent_list.html', human_id=human_id,
+                           pat_form=pat_form)
+
+@user_blueprint.route('/patent_edit/<id>', methods=['GET'])
+@login_required
+def patent_edit(id):
+    pat = Patent.query.filter_by(id=id).first()
+    if pat == None:
+        flash('No Patent Details.  Please add', 'danger')
+        return redirect(url_for('main.home'))
+
+    return render_template('user/patent_edit.html', pat=pat)
+
+
+@user_blueprint.route('/patent_edit_title/<id>', methods=['POST'])
+@login_required
+def patent_edit_title(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.title = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_authors/<id>', methods=['POST'])
+@login_required
+def patent_edit_authors(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.authors = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_publisher/<id>', methods=['POST'])
+@login_required
+def patent_edit_publisher(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.publisher = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_patent_date/<id>', methods=['POST'])
+@login_required
+def patent_edit_patent_date(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.patent_date = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_description/<id>', methods=['POST'])
+@login_required
+def patent_edit_description(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.description = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_patent_url/<id>', methods=['POST'])
+@login_required
+def patent_edit_patent_url(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.patent_url = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/patent_edit_patent_category/<id>', methods=['POST'])
+@login_required
+def patent_edit_patent_category(id):
+    pat = Patent.query.filter_by(id=id).first()
+    pat.patent_category = request.form['value']
+    db.session.commit()
+    return redirect(url_for('user.patent_list', human_id=pat.human_id))
+
+
+@user_blueprint.route('/user/academic_record/<human_id>', methods=['GET'])
+@login_required
+def academic_record(human_id):
+    ed = Education.query.filter_by(human_id=human_id).order_by(desc(Education.start_date))
+    ed_data = {'educationlist': ed}
+    ed_form = EducationFormListForm(data=ed_data)
+
+    pat = Patent.query.filter_by(human_id=human_id).order_by(desc(Patent.issue_date))
+    pat_data = {'patentlist': pat}
+    pat_form = PatentFormListForm(data=pat_data)
+
+    pub = Publication.query.filter_by(human_id=human_id).order_by(desc(Publication.publication_date))
+    pub_data = {'publicationlist': pub}
+    pub_form = PublicationFormListForm(data=pub_data)
+
+    return render_template('user/academic_record.html',
+                           human_id=human_id,
+                           ed_form=ed_form,
+                           pat_form=pat_form,
+                           pub_form=pub_form)

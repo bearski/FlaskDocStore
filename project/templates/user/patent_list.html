@@ -1,0 +1,66 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Patents</h2></td><br>
+
+<form action='my-action' method='post'>
+    {{ pat_form.hidden_tag() }}
+    {% for pat in pat_form.patentlist %}
+        <table class="table table-borderless" cellspacing=0 cellpadding=0>
+            <thead>
+                <tr>
+                    <th class="col-sm-6"><h2><a
+                            href="{{ url_for('user.patent_edit', id=pat.data.id) }}"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="click to edit">
+                            {{ pat.data.title }}
+                    </a></h2></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Inventors:  </b>{{ pat.data.inventors }}</td>
+                </tr>
+                <tr>
+                    <td><b>Patent Number</b></td>
+                    <td><b>Issue Date</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pat.data.patent_number }}</td>
+                    <td>{{ pat.data.issue_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Patent Office</b></td>
+                    <td><b>Patent Status</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pat.data.patent_office }}</td>
+                    <td>{{ pat.data.patent_status }}</td>
+                </tr>
+                <tr>
+                    <td><b>Description</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pat.data.description }}</td>
+                </tr>
+                <tr>
+                    <td><b>Link to patent</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pat.data.patent_url }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{{ url_for('user.patent_edit', id=pat.data.id) }}">edit</a>
+    {% endfor %}
+</form>
+
+<br><br>
+
+<p><a href="/user/patent_add/{{ human_id }}"</a>Add new patents</p>
+
+{% endblock %}
+

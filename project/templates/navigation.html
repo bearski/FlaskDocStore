@@ -16,14 +16,19 @@
       <ul class="nav navbar-nav">
         {% if current_user.confirmed and current_user.is_authenticated() %}
           <li><a href="{{ url_for('user.profile', username=current_user.username) }}">Profile</a></li>
-          <li><a href="{{ url_for('user.education_list', human_id=current_user.id) }}">Academic Record</a></li>
+          <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle disabled" href="{{ url_for('user.academic_record', human_id=current_user.id) }}">Academic Record<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <li><a href="{{ url_for('user.education_list', human_id=current_user.id) }}">Education</a></li>
+            <li><a href="{{ url_for('user.patent_list', human_id=current_user.id) }}">Patents</a></li>
+            <li><a href="{{ url_for('user.publication_list', human_id=current_user.id) }}">Publications</a></li>
+            </ul>
+          </li>
           <li><a href="{{ url_for('user.employment_list', human_id=current_user.id) }}">Employment History</a></li>
-          <!--<link href="../static/bootstrap-editable.css" rel="stylesheet"/>-->
-          <link href="{{url_for('static', filename='bootstrap-editable.css')}}" rel="stylesheet" media="screen">
 
+          <link href="{{url_for('static', filename='bootstrap-editable.css')}}" rel="stylesheet" media="screen">
           <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
           <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-          <!--<script src="../static/bootstrap-editable.js"></script>-->
           <script src="{{url_for('static', filename='bootstrap-editable.js')}}" type="text/javascript"></script>
 
         {% elif current_user.is_authenticated() %}

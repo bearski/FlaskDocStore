@@ -1,0 +1,29 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Add New Publication Details</h2></td><br>
+
+<br>
+<form role="form" method="post" action="">
+  {{ form.hidden_tag() }}
+  <input type="hidden" name="human_id" value={{ human_id }}>
+  Title:<br>
+    {{ form.title(placeholder="Title") }}<br><br>
+  Publication Category:<br>
+    {{ form.publication_category_list }}<br><br>
+  Description:<br>
+    {{ form.description(placeholder="Description") }}<br><br>
+  Authors:<br>
+    {{ form.authors(placeholder="Authors") }}<br><br>
+  Publisher:<br>
+    {{ form.publisher(placeholder="Publisher") }}<br><br>
+  Publication Date:<br>
+    {{ form.publication_date(placeholder="Publication Date") }}<br><br>
+  Link to publication:<br>
+    {{ form.publication_url(placeholder="url") }}<br><br>
+  <button class="btn btn-success" type="submit">Submit</button>
+  <br><br>
+</form>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+<!-- extend base layout -->
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Publications</h2></td><br>
+
+<form action='my-action' method='post'>
+    {{ pub_form.hidden_tag() }}
+    {% for pub in pub_form.publicationlist %}
+        <table class="table table-borderless" cellspacing=0 cellpadding=0>
+            <thead>
+                <tr>
+                    <th class="col-sm-6"><h2><a
+                            href="{{ url_for('user.publication_edit', id=pub.data.id) }}"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="click to edit">
+                            {{ pub.data.title }}
+                    </a></h2></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Authors</b></td>
+                    <td><b>Publication Date</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pub.data.authors }}</td>
+                    <td>{{ pub.data.publication_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Category: </b>{{ pub.data.publication_category }}</td>
+                </tr>
+                <tr>
+                    <td><b>Description</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pub.data.description }}</td>
+                </tr>
+                <tr>
+                    <td><b>Link to Publication</b></td>
+                </tr>
+                <tr>
+                    <td>{{ pub.data.publication_url }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="{{ url_for('user.publication_edit', id=pub.data.id) }}">edit</a>
+    {% endfor %}
+</form>
+
+<br><br>
+
+<p><a href="/user/publication_add/{{ human_id }}"</a>Add new publications</p>
+
+{% endblock %}
+

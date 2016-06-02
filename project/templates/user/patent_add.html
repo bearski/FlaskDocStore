@@ -1,0 +1,31 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<td><h2>Add New Patent Details</h2></td><br>
+
+<br>
+<form role="form" method="post" action="">
+  {{ form.hidden_tag() }}
+  <input type="hidden" name="human_id" value={{ human_id }}>
+  Title:<br>
+    {{ form.title(placeholder="Title") }}<br><br>
+  Description:<br>
+    {{ form.description(placeholder="Description") }}<br><br>
+  Patent Number:<br>
+    {{ form.patent_number(placeholder="Patent Number") }}<br><br>
+  Inventors:<br>
+    {{ form.inventors(placeholder="Inventors") }}<br><br>
+  Issue Date:<br>
+    {{ form.issue_date(placeholder="Issue Date") }}<br><br>
+  Patent Office:<br>
+    {{ form.patent_office_list }}<br><br>
+  Patent Status:<br>
+    {{ form.patent_status_list }}<br><br>
+  Link to patent:<br>
+    {{ form.patent_url(placeholder="url") }}<br><br>
+  <button class="btn btn-success" type="submit">Submit</button>
+  <br><br>
+</form>
+
+{% endblock %}
