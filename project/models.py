@@ -152,7 +152,7 @@ class Publication(db.Model):
     __tablename__ = "publication"
     id = db.Column(db.Integer, primary_key=True)
     human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
-    title = db.Column(db.String(10), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     authors = db.Column(db.String(250), nullable=True)
     publication_date = db.Column(db.DateTime, nullable=True)
     publisher = db.Column(db.String(250), nullable=True)
