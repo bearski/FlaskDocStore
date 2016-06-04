@@ -15,7 +15,9 @@ from project.models import (
     Gender,
     PatentOffice,
     PatentStatus,
-    PublicationCategory
+    PublicationCategory,
+    PresentationRole,
+    ResearchRole
 )
 
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -341,6 +343,17 @@ def insert_lookup_data():
     # PatentStatus
     db.session.add(PatentStatus(status='Patent Issued'))
     db.session.add(PatentStatus(status='Patent Pending'))
+    db.session.commit()
+
+    db.session.add(PresentationRole(description='Presenter'))
+    db.session.add(PresentationRole(description='Panelist'))
+    db.session.add(PresentationRole(description='Keynote Speaker'))
+    db.session.commit()
+
+    db.session.add(ResearchRole(description='Head Researcher'))
+    db.session.add(ResearchRole(description='Research Assistant'))
+    db.session.add(ResearchRole(description='Data Collection'))
+    db.session.add(ResearchRole(description='Experimentation'))
     db.session.commit()
 
 if __name__ == '__main__':

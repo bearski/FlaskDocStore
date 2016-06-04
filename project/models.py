@@ -220,5 +220,51 @@ class Certification(db.Model):
         return self.id
 
 
-# presentations
-# research
+class PresentationRole(db.Model):
+    __tablename__ = "presentation_role"
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+        return self.description
+
+
+class Presentation(db.Model):
+    __tablename__ = "presentation"
+    id = db.Column(db.Integer, primary_key=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(250), nullable=True)
+    conference = db.Column(db.String(250), nullable=True)
+    location = db.Column(db.String(250), nullable=True)
+    presentation_date = db.Column(db.DateTime, nullable=True)
+    presentation_role_id = db.Column(db.Integer, db.ForeignKey('presentation_role.id'))
+    presentation_role = db.relationship('PresentationRole', backref=db.backref('presentation', lazy='dynamic'))
+
+    def __repr__(self):
+        return self.id
+
+
+class ResearchRole(db.Model):
+    __tablename__ = "research_role"
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+        return self.description
+
+
+class Research(db.Model):
+    __tablename__ = "research"
+    id = db.Column(db.Integer, primary_key=True)
+    human_id = db.Column(db.Integer, db.ForeignKey('human.id'), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(250), nullable=True)
+    research_institution = db.Column(db.String(250), nullable=True)
+    start_date = db.Column(db.DateTime, nullable=True)
+    end_date = db.Column(db.DateTime, nullable=True)
+    research_role_id = db.Column(db.Integer, db.ForeignKey('research_role.id'))
+    research_role = db.relationship('ResearchRole', backref=db.backref('research', lazy='dynamic'))
+
+    def __repr__(self):
+        return self.id
